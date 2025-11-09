@@ -622,91 +622,6 @@
 
 </style>
 
-<input type="hidden" name="client_timezone" id="client_timezone">
-<input type="hidden" name="client_time" id="client_time">
-
-<link rel="stylesheet" href="https://studentportal.uoh.edu.pk/resources/assets/quiz_files/css/sweetalert2.min.css">
-<script src="https://studentportal.uoh.edu.pk/resources/assets/quiz_files/js/sweetalert2.js"></script>
-
-
-
-
-
-<script>
-window.addEventListener('load', function () {
-  const phpTimeSec = 1762709960; 
-  const phpTime    = phpTimeSec * 1000;  
-  const jsTime     = Date.now();         
-  const diffMs     = Math.abs(jsTime - phpTime);
-  const diffMins   = Math.round(diffMs / 60000);  // convert to minutes
-  const maxDiffMs  = 15 * 60 * 1000;              // 15 minutes tolerance
-
-  const userTZ   = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
-  const required = 'Asia/Karachi';
-
-  const blockForTime = diffMs > maxDiffMs;
-  const blockForTZ   = userTZ !== required;
-  const shouldBlock  = blockForTime || blockForTZ;
-
-  console.log({
-    phpTimeSec,
-    phpTimeFormatted: new Date(phpTime).toLocaleString(),
-    jsTimeFormatted: new Date(jsTime).toLocaleString(),
-    diffMins,
-    userTZ,
-    required,
-    blockForTime,
-    blockForTZ
-  });
-
-  if (!shouldBlock) return;
-
-  document.querySelectorAll('a.btn.btn-success.btn-sm, a[href*="online-exams-start"]').forEach(btn => {
-    const cell = btn.closest('td') || btn.parentElement;
-    if (!cell) return;
-
-    let message = '';
-    if (blockForTime) {
-      message += `
-        <div class="alert alert-danger text-center p-2 mb-1" role="alert" style="font-size:13px;">
-          <i class="fas fa-clock"></i>
-          Your system clock differs from the server by <b>${diffMins}</b> minute(s).<br>
-          Please correct it before starting the test.
-        </div>`;
-    }
-    if (blockForTZ) {
-      message += `
-        <div class="alert alert-danger text-center p-2 mb-0" role="alert" style="font-size:13px;">
-          <i class="fas fa-exclamation-triangle"></i>
-          Your time zone is <strong>${userTZ}</strong>.<br>
-          Please set it to <strong>${required}</strong> (Islamabad/Karachi).
-        </div>`;
-    }
-    cell.innerHTML = message;
-  });
-
-  if (typeof Swal !== 'undefined') {
-    const msg = blockForTime && blockForTZ
-      ? `Your system time (<b>${diffMins} minutes</b> off) and time zone are mismatched.`
-      : blockForTime
-        ? `Your system clock is <b>${diffMins} minutes</b> off from the server.`
-        : `Your time zone is set to <b>${userTZ}</b>. Please change it to <b>${required}</b>.`;
-
-    Swal.fire({
-      title: '⚠️ Access Blocked',
-      html: msg,
-      icon: 'error',
-      confirmButtonText: 'Okay',
-      allowOutsideClick: false,
-      allowEscapeKey: false
-    });
-  }
-});
-</script>
-
-
-
-
 
 
   </div>
@@ -765,3 +680,4 @@ window.addEventListener('load', function () {
 
 </body>
 </html>
+
